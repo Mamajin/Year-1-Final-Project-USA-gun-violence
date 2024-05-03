@@ -19,16 +19,16 @@ class UsaGVView(tk.Frame):
                                   sticky="news")
 
         self.confirm_button = tk.Button(root, text="Confirm", bg="light green")
-        self.confirm_button.grid(row=7, column=7, padx=5, pady=5,
+        self.confirm_button.grid(row=6, column=8, padx=5, pady=5,
                                  sticky="news")
 
         self.clear_button = tk.Button(root, text="Clear")
-        self.clear_button.grid(row=7, column=8, padx=5, pady=5,
+        self.clear_button.grid(row=6, column=9, padx=5, pady=5,
                                sticky="news")
 
         self.info_selector = tk.Listbox(root)
-        self.info_selector.grid(row=0, column=7, padx=2, pady=2,
-                                columnspan=2, rowspan=3,
+        self.info_selector.grid(row=0, column=6, padx=10, pady=10,
+                                columnspan=4, rowspan=6,
                                 sticky="news")
 
     def empty_graph_display(self):
