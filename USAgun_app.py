@@ -5,18 +5,16 @@ from USAgun_view import UsaGVView
 
 if __name__ == "__main__":
     root = tk.Tk()
-
+    # root.columnconfigure(0, weight=1)
+    # root.rowconfigure(0, weight=1)
+    # MVC components
     model = UsaGVModel
     view = UsaGVView(root)
     controller = UsaGVController(root, model, view)
-    root.title("USA Gun Violence")
+    # Root component
+    root.title("USA Gun Violence Database Navigator")
+    # Alternate size: 600x400, Intended size: 1200x800
     root.geometry('1100x700')
-    view.pack(expand=True, fill=tk.BOTH)
+    root.columnconfigure(tuple(range(11)), weight=1)
+    root.rowconfigure(tuple(range(8)), weight=1)
     root.mainloop()
-
-# def main():
-#     root = tk.Tk()
-#     model = GunViolenceData(data)  # You need to replace 'data' with your actual dataset
-#     view = View(root)
-#     controller = Controller(root, model, view)
-#     view.run()
