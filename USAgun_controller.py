@@ -1,6 +1,5 @@
 """The Controller handles user input and updates the Model accordingly.
 It also updates the View based on changes in the Model"""
-import matplotlib.pyplot as plt
 
 
 class UsaGVController:
@@ -32,7 +31,9 @@ class UsaGVController:
 
             elif info_type == "Incident Locations":
                 locations = self.model.get_incident_locations()
-                print("Incident Locations:", locations)
+                self.update_graph("Incident Locations",
+                                  "Locations", locations.keys(),
+                                  "Frequency", locations.values())
             elif info_type == "Incident Severity":
                 severity = self.model.get_incident_severity()
                 print("Incident Severity:", severity)
@@ -42,9 +43,9 @@ class UsaGVController:
                      y_label, attribute_y):
         """Update the graph"""
         self.view.ax.clear()
-        self.view.ax.bar(attribute_x, attribute_y)
+        self.view.ax.bar(attribute_x, attribute_y, color='lightsalmon')
         self.view.ax.set_xlabel(x_label)
-        self.view.ax.set_xticklabels(attribute_x, rotation=10)
+        self.view.ax.set_xticklabels(attribute_x)
         self.view.ax.set_ylabel(y_label)
         self.view.ax.set_title(title)
         self.view.canvas.draw()

@@ -48,7 +48,14 @@ class UsaGVModel:
 
     def get_incident_locations(self):
         """Get unique incident locations."""
-        return list(set(event['location'] for event in self.data))
+        location_dist = {}
+        for event in self.data:
+            location = event['location.1']
+            if location in location_dist:
+                location_dist[location] += 1
+            else:
+                location_dist[location] = 1
+        return location_dist
 
     def get_shooter_age_distribution(self):
         """Get the distribution of shooter ages."""

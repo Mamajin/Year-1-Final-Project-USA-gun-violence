@@ -1,1 +1,0 @@
-These are the required packages you need to download in order to run this program.

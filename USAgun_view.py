@@ -43,7 +43,7 @@ class UsaGVView(tk.Frame):
         # Information selector
         self.info_selector = tk.Listbox(self.root)
         self.info_selector.grid(row=0, column=8, padx=8, pady=8,
-                                columnspan=4, rowspan=6,
+                                columnspan=4, rowspan=7,
                                 sticky="news")
 
     def information_detail(self):
@@ -61,7 +61,7 @@ class UsaGVView(tk.Frame):
         """Set options for information selector."""
         self.info_selector.delete(0, tk.END)
         for option in options:
-            self.info_selector.insert(tk.END, option)
+            self.info_selector.insert(tk.END, f" ⭕ {option}")
 
     def make_graph_plotter(self):
         """Plot a graph with the given data."""
@@ -73,7 +73,7 @@ class UsaGVView(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10,
-                                         columnspan=7, rowspan=4,
+                                         columnspan=7, rowspan=6,
                                          sticky="news")
 
     def update_graph(self, attribute_x, attribute_y):
