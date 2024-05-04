@@ -6,13 +6,13 @@ from USAgun_view import UsaGVView
 if __name__ == "__main__":
     root = tk.Tk()
     # MVC components
-    model = UsaGVModel
+    model = UsaGVModel()
     view = UsaGVView(root)
     controller = UsaGVController(root, model, view)
     # Root component
     root.title("USA Gun Violence Database Navigator")
     # Alternate size: 600x400, Intended size: 1200x800
     root.geometry('1100x600')
-    root.columnconfigure(tuple(range(11)), weight=1)
-    root.rowconfigure(tuple(range(8)), weight=1)
+    root.columnconfigure(tuple(range(12)), weight=1)
+    root.rowconfigure(tuple(range(10)), weight=1)
     root.mainloop()

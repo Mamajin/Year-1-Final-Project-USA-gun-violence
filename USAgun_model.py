@@ -3,13 +3,13 @@ import csv
 from Statistic_calculator import StatisticalCalculator
 
 
-class UsaGVModel(StatisticalCalculator):
+class UsaGVModel:
     """Program model class that keeps all the functions of the program."""
 
     def __init__(self):
-        super().__init__(self.data)
         self.data = self.convert_to_dict('shooting_data.csv')
         self.data_key = self.get_attribute_name()
+        self.stat_cal = StatisticalCalculator(self.data)
 
     @staticmethod
     def convert_to_dict(csv_file):
@@ -28,23 +28,18 @@ class UsaGVModel(StatisticalCalculator):
             key_ls.append(key)
         return key_ls
 
-    def get_statistical_values(self):
+    def get_statistical_values(self, key):
         """Returns the statistical values of a numerical attribute.
         The returned values are the following in order
         mean, median, mode, min, max, variance, standard deviation"""
         return [
-            self.calculate_mean(self.data),
-            self.calculate_median(self.data),
-            self.calculate_mode(self.data),
-            self.calculate_min(self.data),
-            self.calculate_variance(self.data),
-            self.calculate_standard_deviation(self.data),
+            self.stat_cal.calculate_mean(key),
+            self.stat_cal.calculate_median(key),
+            self.stat_cal.calculate_mode(key),
+            self.stat_cal.calculate_min(key),
+            self.stat_cal.calculate_variance(key),
+            self.stat_cal.calculate_standard_deviation(key),
         ]
-
-    def insert_image(self, image):
-        """Return image"""
-        pass
-
 
     def filter_by_age_group(self, age_group):
         """Filter data by age group of the shooter."""
@@ -57,14 +52,14 @@ class UsaGVModel(StatisticalCalculator):
 
     def get_shooter_age_distribution(self):
         """Get the distribution of shooter ages."""
-        age_distribution = {}
+        age_group_distribution = {}
         for event in self.data:
-            age = event['age_of_shooter']
-            if age in age_distribution:
-                age_distribution[age] += 1
+            age_group = event['age_group']
+            if age_group in age_group_distribution:
+                age_group_distribution[age_group] += 1
             else:
-                age_distribution[age] = 1
-        return age_distribution
+                age_group_distribution[age_group] = 1
+        return age_group_distribution
 
     def get_incident_severity(self):
         """Get the severity of each incident."""
