@@ -10,6 +10,7 @@ class UsaGVView(tk.Frame):
     def __init__(self, root):
         super().__init__()
         self.root = root
+        self.information_text = tk.StringVar(self.root, "Empty")
         # Main page components
         self.init_components()
 
@@ -47,7 +48,7 @@ class UsaGVView(tk.Frame):
                                 sticky="news")
 
     def information_detail(self):
-        info_detail = tk.Label(text="Information about the chosen information",
+        info_detail = tk.Label(textvariable=self.information_text,
                                bg="grey")
         return info_detail
 
