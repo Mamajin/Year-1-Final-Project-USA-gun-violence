@@ -2,6 +2,7 @@
 This displays the dat from the Model and sends user inputs to the Controller"""
 
 import tkinter as tk
+from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -18,6 +19,9 @@ class UsaGVView(tk.Frame):
         """Initialize components"""
         font = ('Helvetica', 14)
         self.option_add('*Font', font)
+        # Progress bar
+
+
         # Menu box
         self.menu_box = self.make_menu_box()
 
