@@ -15,7 +15,8 @@ class UsaGVController:
         self.info_options = [
             "Age Group Distribution",
             "Incident Locations",
-            "Incident Severity"
+            "Incident Severity",
+            "Incident Heatmap"
         ]
         self.view.set_info_options(self.info_options)
 
@@ -26,25 +27,25 @@ class UsaGVController:
             info_type = self.info_options[selected_info_index]
             if info_type == "Age Group Distribution":
                 age_distribution = self.model.get_shooter_age_distribution()
-                self.update_graph("Age Group Distribution",
+                self.update_display("Age Group Distribution",
                                   "Age Group", age_distribution.keys(),
                                   "Frequency", age_distribution.values())
 
             elif info_type == "Incident Locations":
                 locations = self.model.get_incident_locations()
                 locations['Other'] = locations.pop('Other')
-                self.update_graph("Incident Locations",
+                self.update_display("Incident Locations",
                                   "Locations", locations.keys(),
                                   "Frequency", locations.values())
             elif info_type == "Incident Severity":
                 severity = self.model.get_incident_severity()
-                self.update_graph("Incident Severity",
+                self.update_display("Incident Severity",
                                   "Date", severity.keys(),
                                   "Count", severity.values())
 
-    def update_graph(self, title,
-                     x_label, attribute_x,
-                     y_label, attribute_y):
+    def update_display(self, title,
+                       x_label, attribute_x,
+                       y_label, attribute_y):
         """Update the graph"""
         self.view.ax.clear()
         if title == "Age Group Distribution" or title == "Incident Locations":
@@ -55,40 +56,37 @@ class UsaGVController:
             self.view.ax.set_title(title)
             self.view.canvas.draw()
         elif title == "Incident Severity":
-            start_date = max(self.model.data['date'].min(), pd.Timestamp('2022-01-01'))
-            end_date = min(self.model.data['date'].max(), pd.Timestamp('2022-12-31'))
-            # Filter the data for the specified date range
-            new_df = self.model.data[
-                (self.model.data['date'] >= start_date) &
-                (self.model.data['date'] <= end_date)]
-            # Set the date column as the index
-            self.model.data.set_index('date', inplace=True)
-            # Define the periods
-            periods = [(start_date, pd.Timestamp('2022-06-30')),
-                       (pd.Timestamp('2022-07-01'), end_date)]
-            print(self.model.data.head())
-            # Plot each period separately
-            # self.view.ax.figure(figsize=(12, 8))
-            # for i, period in enumerate(periods, 1):
-            #     self.view.ax.subplot(2, 1, i)  # Create subplots for each period
-            #     start, end = period
-            #     # Filter the data for the current period
-            #     sliced_data = self.model.data.loc[start:end]
-            #     # Group and aggregate the sliced data by date
-            #     grouped_data = sliced_data.resample('D').sum()  # Resample to daily frequency and sum the values
-            #     # Plot the graph for the current period
-            #     self.view.ax.plot(grouped_data.index, grouped_data['injured'],
-            #              label='Injuries', color='blue')
-            #     self.view.ax.plot(grouped_data.index, grouped_data['fatalities'],
-            #              label='Deaths', color='red')
-            #     self.view.ax.plot(grouped_data.index, grouped_data['total_victims'],
-            #              label='Total Victims', color='green')
-            #     # Customize the plot
-            #     self.view.ax.title(f'Gun Violence Incidents Over Time (Period {i})')
-            #     self.view.ax.xlabel('Date')
-            #     self.view.ax.ylabel('Count')
-            #     self.view.ax.legend()
-            #     self.view.ax.grid(True)
+            # Make dataframe copy
+            df_copy = self.model.data.copy()
+            # Convert the date column to datetime format and set it as the index
+            df_copy['date'] = pd.to_datetime(df_copy['date'])
+            df_copy.set_index('date', inplace=True)
+            # Find the index of the row with the maximum fatalities
+            max_fatalities_index = df_copy['fatalities'].idxmax()
+            # Remove the row with the maximum fatalities
+            data = df_copy.drop(index=max_fatalities_index)
+            # Group and aggregate the data by date
+            grouped_data = data.resample(
+                'D').sum()  # Resample to daily frequency and sum the values
+            # Plot the graph
+            self.view.ax.plot(grouped_data.index, grouped_data['injured'],
+                              label='Injuries', color='blue')
+            self.view.ax.plot(grouped_data.index, grouped_data['fatalities'],
+                              label='Deaths', color='red')
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['total_victims'],
+                              label='Total Victims', color='green')
+            # Customize the plot
+            self.view.ax.set_title(
+                'Gun Violence Incidents Over Time (Excluding Maximum '
+                'Fatalities)')
+            self.view.ax.set_xlabel('Date')
+            self.view.ax.set_ylabel('Count')
+            self.view.ax.legend()
+            # self.view.ax.grid(True)
+            # Show the plot
+            # self.view.ax.tight_layout()
+            self.view.canvas.draw()
 
     def update_information_text(self, key):
         """Update the information text box below the graph"""

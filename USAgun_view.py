@@ -69,7 +69,7 @@ class UsaGVView(tk.Frame):
             self.info_selector.insert(tk.END, f" ⭕ {option}")
 
     def make_graph_plotter(self):
-        """Plot a graph with the given data."""
+        """Plot a blank graph with the given data."""
         # Create Matplotlib figure and axis
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax = self.fig.add_subplot(111)
@@ -80,12 +80,3 @@ class UsaGVView(tk.Frame):
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10,
                                          columnspan=7, rowspan=6,
                                          sticky="news")
-
-    def update_graph(self, attribute_x, attribute_y):
-        """Update the graph"""
-        self.ax.clear()
-        self.ax.plot(attribute_x, attribute_y)
-        self.ax.set_xlabel('X Label')
-        self.ax.set_ylabel('Y Label')
-        self.ax.set_title('Graph Title')
-        self.canvas.draw()

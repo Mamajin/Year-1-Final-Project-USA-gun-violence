@@ -56,7 +56,8 @@ class StatisticalCalculator:
             return None
 
     def calculate_standard_deviation(self, key):
-        """Calculate the standard deviation of the specified numerical attribute."""
+        """Calculate the standard deviation of the specified numerical
+        attribute."""
         values = [entry[key] for entry in self.data if isinstance(entry[key], (int, float))]
         if len(values) > 1:
             return statistics.stdev(values)
