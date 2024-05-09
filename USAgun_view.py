@@ -2,7 +2,7 @@
 This displays the dat from the Model and sends user inputs to the Controller"""
 
 import tkinter as tk
-from tkinter import ttk
+import customtkinter as ctk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -12,15 +12,19 @@ class UsaGVView(tk.Frame):
         super().__init__()
         self.root = root
         self.information_text = tk.StringVar(self.root, "Empty")
+        # Font set here
+        self.tick_font = {'weight': 'normal',
+                          'size': 12}
+        self.label_font = {'weight': 'normal',
+                           'size': 14}
         # Main page components
         self.init_components()
 
     def init_components(self):
         """Initialize components"""
-        font = ('Helvetica', 14)
+        font = ('Helvetica', 22)
         self.option_add('*Font', font)
         # Progress bar
-
 
         # Menu box
         self.menu_box = self.make_menu_box()
@@ -35,19 +39,26 @@ class UsaGVView(tk.Frame):
                                   sticky="news")
 
         # Confirm to choose the attribute
-        self.confirm_button = tk.Button(self.root, text="Confirm",
-                                        bg="light green")
-        self.confirm_button.grid(row=8, column=10, padx=5, pady=5,
+        self.confirm_button = ctk.CTkButton(self.root, text="Confirm",
+                                            fg_color="green",
+                                            text_color="black",
+                                            hover_color="light green",
+                                            corner_radius=32)
+        self.confirm_button.grid(row=8, column=9, padx=5, pady=5,
                                  sticky="news")
 
         # Clear display
-        self.clear_button = tk.Button(self.root, text="Clear")
-        self.clear_button.grid(row=8, column=11, padx=5, pady=5,
+        self.clear_button = ctk.CTkButton(self.root, text="Clear",
+                                          fg_color="light grey",
+                                          text_color="black",
+                                          hover_color="grey",
+                                          corner_radius=32)
+        self.clear_button.grid(row=8, column=10, padx=5, pady=5,
                                sticky="news")
 
         # Information selector
         self.info_selector = tk.Listbox(self.root)
-        self.info_selector.grid(row=0, column=8, padx=8, pady=8,
+        self.info_selector.grid(row=0, column=7, padx=8, pady=8,
                                 columnspan=4, rowspan=7,
                                 sticky="news")
 
