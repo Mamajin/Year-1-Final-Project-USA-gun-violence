@@ -2,8 +2,7 @@
 import csv
 
 import pandas as pd
-
-from Statistic_calculator import StatisticalCalculator
+import numpy as np
 
 
 class UsaGVModel:
@@ -12,20 +11,25 @@ class UsaGVModel:
     def __init__(self):
         self.data = pd.read_csv('shooting_data.csv')
         self.data['date'] = pd.to_datetime(self.data['date'])
-        self.stat_cal = StatisticalCalculator(self.data)
 
-    def get_statistical_values(self, key):
-        """Returns the statistical values of a numerical attribute.
-        The returned values are the following in order
-        mean, median, mode, min, max, variance, standard deviation"""
-        return [
-            self.stat_cal.calculate_mean(key),
-            self.stat_cal.calculate_median(key),
-            self.stat_cal.calculate_mode(key),
-            self.stat_cal.calculate_min(key),
-            self.stat_cal.calculate_variance(key),
-            self.stat_cal.calculate_standard_deviation(key),
-        ]
+    def get_statistical_fstring(self, key):
+        """Returns strings of statistical values from a given statistic dict"""
+        f_stat_value = (f" Statistical Values of {key}:\n"
+                        f" ▪️Mean: {round(self.data[key].mean(), 2)}\n"
+                        f" ▪️Median: {round(self.data[key].median(), 2)}\n"
+                        f" ▪️Mode: {round(self.data[key].mode()[0], 2)}\n"
+                        f" ▪️Min: {round(self.data[key].min(), 2)}\n"
+                        f" ▪️Max: {(self.data[key].max())}\n"
+                        f" ▪️Std: {round(self.data[key].std(), 2)}")
+        return f_stat_value
+
+    def get_ordinal_stat_fstring(self, key):
+        """Returns Ordinals statistic of data"""
+        new_df = self.data.copy()
+        ordinal_values = self.data[key].unique()
+        new_df.ordinal_val = pd.Categorical(
+            new_df.ordinal_val, ordinal_values, ordered=True)
+        median_value = np.median(new_df[""])
 
     def filter_by_age_group(self, age_group):
         """Filter data by age group of the shooter."""
@@ -47,3 +51,4 @@ class UsaGVModel:
             'fatalities': 'sum',
             'total_victims': 'sum'
         }).to_dict()
+

@@ -35,8 +35,9 @@ class UsaGVView(tk.Frame):
         # Information about the displaying attribute
         self.information_box = self.information_detail()
         self.information_box.grid(row=6, column=0, padx=10, pady=10,
-                                  columnspan=7, rowspan=3,
+                                  columnspan=9, rowspan=3,
                                   sticky="news")
+        # self.info_scrollbar = tk.Scrollbar(self.root, command=self.information_box.yview)
 
         # Confirm to choose the attribute
         self.confirm_button = ctk.CTkButton(self.root, text="Confirm",
@@ -58,13 +59,14 @@ class UsaGVView(tk.Frame):
 
         # Information selector
         self.info_selector = tk.Listbox(self.root)
-        self.info_selector.grid(row=0, column=7, padx=8, pady=8,
+        self.info_selector.grid(row=0, column=9, padx=10, pady=10,
                                 columnspan=4, rowspan=7,
                                 sticky="news")
 
     def information_detail(self):
         info_detail = tk.Label(textvariable=self.information_text,
-                               bg="grey")
+                               bg="white", anchor="nw",
+                               justify=tk.LEFT)
         return info_detail
 
     def make_menu_box(self):
@@ -89,5 +91,5 @@ class UsaGVView(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10,
-                                         columnspan=7, rowspan=6,
+                                         columnspan=9, rowspan=6,
                                          sticky="news")
