@@ -8,25 +8,30 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class UsaGVView(tk.Frame):
+    """
+    Program view class that keeps all the visual components of the program.
+    """
     def __init__(self, root):
         super().__init__()
         self.root = root
+        # StringVar for information text
         self.information_text = tk.StringVar(self.root, "None")
-        # Font set here
+        # Font sets here
         self.tick_font = {'weight': 'normal',
                           'size': 12}
         self.label_font = {'weight': 'normal',
                            'size': 14}
         self.button_font = ("Impact", 20)
-        self.detail_font = ("Times New Roman", 19)
+        self.detail_font = ("Helvetica", 19)
         # Main page components
         self.init_components()
 
     def init_components(self):
-        """Initialize components"""
+        """
+        Initialize components in the program.
+        """
         font = ('Helvetica', 24)
         self.option_add('*Font', font)
-        # Progress bar
 
         # Menu box
         self.menu_box = self.make_menu_box()
@@ -39,9 +44,8 @@ class UsaGVView(tk.Frame):
         self.information_box.grid(row=6, column=0, padx=8, pady=8,
                                   columnspan=9, rowspan=3,
                                   sticky="news")
-        # self.info_scrollbar = tk.Scrollbar(self.root, command=self.information_box.yview)
 
-        # Confirm to choose the attribute
+        # Confirm button
         self.confirm_button = ctk.CTkButton(self.root, text="Confirm",
                                             fg_color="SpringGreen3",
                                             text_color="black",
@@ -51,7 +55,7 @@ class UsaGVView(tk.Frame):
         self.confirm_button.grid(row=8, column=9, padx=5, pady=5,
                                  sticky="news")
 
-        # Clear display
+        # Clear button
         self.clear_button = ctk.CTkButton(self.root, text="Clear",
                                           fg_color="light grey",
                                           text_color="black",
@@ -67,7 +71,11 @@ class UsaGVView(tk.Frame):
                                 columnspan=4, rowspan=7,
                                 sticky="news")
 
-    def information_detail(self):
+    def information_detail(self) -> ctk.CTkLabel:
+        """
+        Information text that uses a text-variable.
+        :returns information detail box
+        """
         info_detail = ctk.CTkLabel(self.root,
                                    textvariable=self.information_text,
                                    fg_color="white", anchor="nw",
@@ -76,19 +84,27 @@ class UsaGVView(tk.Frame):
         return info_detail
 
     def make_menu_box(self):
-        """Creates a Menu"""
+        """
+        Creates a Menu.
+        """
         menu_box = tk.Menu()
         self.root.config(menu=menu_box)
         menu_box.add_command(label='Exit', command=self.quit)
 
     def set_info_options(self, options):
-        """Set options for information selector."""
+        """
+        Set options for information selector.
+        :param options: options for the selector
+        """
         self.info_selector.delete(0, tk.END)
         for option in options:
             self.info_selector.insert(tk.END, f" ⭕ {option}")
 
     def make_graph_plotter(self):
-        """Plot a blank graph with the given data."""
+        """
+        Plot a blank graph that will be later changed when the user
+        selects a data to view.
+        """
         # Create Matplotlib figure and axis
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax = self.fig.add_subplot(111)

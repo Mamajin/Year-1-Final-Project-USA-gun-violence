@@ -1,19 +1,23 @@
 """Model of calculator compose of the calculator component"""
-import csv
 
 import pandas as pd
-import numpy as np
 
 
 class UsaGVModel:
-    """Program model class that keeps all the functions of the program."""
+    """
+    Program model class that keeps all the functions of the program.
+    """
 
     def __init__(self):
         self.data = pd.read_csv('shooting_data.csv')
         self.data['date'] = pd.to_datetime(self.data['date'])
 
     def get_statistical_fstring(self, key):
-        """Returns strings of statistical values from a given statistic dict"""
+        """
+        Returns strings of statistical values from a given statistic dict
+        :param key: key of the data needed
+        :return: statistic values in a single string
+        """
         f_stat_value = (f"\n"
                         f"Statistical Values of {key}\n"
                         f"▪️Mean: {round(self.data[key].mean(), 2)}\n"
@@ -25,7 +29,11 @@ class UsaGVModel:
         return f_stat_value
 
     def get_ordinal_stat_fstring(self, key):
-        """Returns Ordinals statistic of data"""
+        """
+        Returns Ordinals statistic of data
+        :param key: key of the data needed
+        :return: statistic values in a single string
+        """
         new_df = self.data.copy()
         ordinal_values = self.data[key].unique()
         # Create string template
@@ -44,19 +52,32 @@ class UsaGVModel:
         return ordinal_string
 
     def filter_by_age_group(self, age_group):
-        """Filter data by age group of the shooter."""
+        """
+        Filter data by age group of the shooter.
+        :param age_group: age groups
+        :return: age_group data
+        """
         return self.data[self.data['age_group'] == age_group]
 
     def get_incident_locations(self):
-        """Get unique incident locations."""
+        """
+        Get unique incident locations.
+        :return: unique location.1 counted
+        """
         return self.data['location.1'].value_counts()
 
     def get_shooter_age_distribution(self):
-        """Get the distribution of shooter ages."""
+        """
+        Get the distribution of shooter ages.
+        :return: distribution of shooter age
+        """
         return self.data['age_group'].value_counts()
 
     def get_incident_severity(self):
-        """Get the severity of each incident."""
+        """
+        Get the severity of each incident.
+        :return: group data aggregated with 3 attributes
+        """
         grouped_data = self.data.groupby('date').agg({
             'injured': 'sum',
             'fatalities': 'sum',

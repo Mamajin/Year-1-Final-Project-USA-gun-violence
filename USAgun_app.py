@@ -1,4 +1,3 @@
-import tkinter as tk
 import customtkinter as ctk
 from USAgun_model import UsaGVModel
 from USAgun_controller import UsaGVController
