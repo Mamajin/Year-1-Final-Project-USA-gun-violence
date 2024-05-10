@@ -10,6 +10,7 @@ class UsaGVModel:
 
     def __init__(self):
         self.data = pd.read_csv('shooting_data.csv')
+        self.original_data = self.data.copy()
         self.data['date'] = pd.to_datetime(self.data['date'])
 
     def get_statistical_fstring(self, key):

@@ -2,6 +2,11 @@
 It also updates the View based on changes in the Model"""
 import pandas as pd
 import seaborn as sns
+import tkinter as tk
+from tkinter import Toplevel
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class UsaGVController:
@@ -9,6 +14,7 @@ class UsaGVController:
     Program controller class that control all the functions usage of
     the program.
     """
+
     def __init__(self, root, model, view):
         self.root = root
         self.model = model
@@ -45,7 +51,8 @@ class UsaGVController:
             # If information is Age Distribution
             elif info_type == "Age Distribution":
                 # fill in function here
-                age_of_shooter_distribution = self.model.data['age_of_shooter'].sort_values(ascending=True)
+                age_of_shooter_distribution = self.model.data[
+                    'age_of_shooter'].sort_values(ascending=True)
                 self.update_display(info_type,
                                     "Age", age_of_shooter_distribution,
                                     "Frequency", age_of_shooter_distribution)
@@ -56,12 +63,18 @@ class UsaGVController:
                 self.update_display(info_type,
                                     "Locations", locations.index,
                                     "Frequency", locations.values)
+
             # If information is Incident Severity
             elif info_type == "Incident Severity":
                 severity = self.model.get_incident_severity()
                 self.update_display(info_type,
                                     "Date", severity.index,
                                     "Count", severity['injured'])
+
+            # If information is Data Story Telling
+            elif info_type == "Data Story Telling":
+                print("Received")
+                self.update_story_display()
 
     def update_display(self, title,
                        x_label, attribute_x,
@@ -76,6 +89,9 @@ class UsaGVController:
         :param attribute_y: values for y-axis
         """
         self.view.ax.clear()
+        # Make dataframe copy
+        df_copy = self.model.data.copy()
+
         if title == "Age Group Distribution" or title == "Incident Locations":
             self.view.ax.bar(attribute_x, attribute_y, color='lightsalmon')
             self.view.ax.set_xlabel(
@@ -102,8 +118,6 @@ class UsaGVController:
             self.update_information_text('age_of_shooter', 'numerical')
 
         elif title == "Incident Severity":
-            # Make dataframe copy
-            df_copy = self.model.data.copy()
             # Convert date column to datetime format and set it as the index
             df_copy['date'] = pd.to_datetime(df_copy['date'])
             df_copy.set_index('date', inplace=True)
@@ -124,14 +138,37 @@ class UsaGVController:
                               label='Total Victims', color='green')
             # Customize the plot
             self.view.ax.set_title(
-                'Gun Violence Incidents Over Time (Excluding Maximum '
-                'Fatalities)')
+                'Gun Violence Incidents Over Time')
             self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
             self.view.ax.set_ylabel(y_label, fontdict=self.view.label_font)
             self.view.ax.legend()
             self.view.canvas.draw()
             # Update information text
             self.update_information_text('injured', 'severity')
+
+    def update_story_display(self):
+        """
+        Update display for the data story telling page
+        :return:
+        """
+        df_copy = self.model.original_data.copy()
+        df_copy = df_copy.drop(columns=['year', 'quarter', 'half'])
+        pairplot_var = sns.pairplot(df_copy, hue='age_group')
+
+        # Create a new Toplevel window
+        graph_window = Toplevel(self.root)
+        graph_window.title("Graph window")
+
+        # Create a Matplotlib figure and axis
+        fig, ax = plt.subplots()
+
+        # Plot the graph
+        ax.set_title("Pair-plot of")
+
+        # Embed the Matplotlib graph in the Tkinter window
+        canvas = FigureCanvasTkAgg(pairplot_var.fig, master=graph_window)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     def update_information_text(self, key, dtype):
         """

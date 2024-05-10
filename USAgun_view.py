@@ -4,6 +4,7 @@ This displays the dat from the Model and sends user inputs to the Controller"""
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
+import seaborn as sns
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -121,12 +122,3 @@ class UsaGVView(ctk.CTkScrollableFrame):
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH,
                                          expand=True)
-
-        # Create a vertical scrollbar
-        self.scrollbar = ttk.Scrollbar(self.graph_frame, orient="vertical",
-                                       command=self.canvas.get_tk_widget().yview)
-        self.scrollbar.pack(side=tk.RIGHT, fill="y")
-
-        # Configure the canvas to use the scrollbar
-        self.canvas.get_tk_widget().configure(
-            yscrollcommand=self.scrollbar.set)
