@@ -67,6 +67,7 @@ class UsaGVController:
             self.view.ax.set_title(title)
             self.view.canvas.draw()
             # Update information about the graph
+            self.update_information_text('age_group', 'ordinal')
 
         elif title == "Age Distribution":
             self.view.ax.hist(attribute_x,bins=20, color='pink')
@@ -114,9 +115,12 @@ class UsaGVController:
         """Update the information text box below the graph"""
         if dtype == "numerical":
             return self.view.information_text.set(
-                self.model.get_statistical_fstring(key))
+                self.model.get_statistical_fstring(key)
+            )
         if dtype == "ordinal":
-            pass
+            return self.view.information_text.set(
+                self.model.get_ordinal_stat_fstring(key)
+            )
 
     def on_clear(self):
         """Clears graph display and graph information"""

@@ -16,21 +16,32 @@ class UsaGVModel:
         """Returns strings of statistical values from a given statistic dict"""
         f_stat_value = (f"\n"
                         f"Statistical Values of {key}\n"
-                        f" ▪️Mean: {round(self.data[key].mean(), 2)}\n"
-                        f" ▪️Median: {round(self.data[key].median(), 2)}\n"
-                        f" ▪️Mode: {round(self.data[key].mode()[0], 2)}\n"
-                        f" ▪️Min: {round(self.data[key].min(), 2)}\n"
-                        f" ▪️Max: {(self.data[key].max())}\n"
-                        f" ▪️Std: {round(self.data[key].std(), 2)}")
+                        f"▪️Mean: {round(self.data[key].mean(), 2)}\n"
+                        f"▪️Median: {round(self.data[key].median(), 2)}\n"
+                        f"▪️Mode: {round(self.data[key].mode()[0], 2)}\n"
+                        f"▪️Min: {round(self.data[key].min(), 2)}\n"
+                        f"▪️Max: {(self.data[key].max())}\n"
+                        f"▪️Std: {round(self.data[key].std(), 2)}")
         return f_stat_value
 
     def get_ordinal_stat_fstring(self, key):
         """Returns Ordinals statistic of data"""
         new_df = self.data.copy()
         ordinal_values = self.data[key].unique()
-        new_df.ordinal_val = pd.Categorical(
-            new_df.ordinal_val, ordinal_values, ordered=True)
-        median_value = np.median(new_df[""])
+        # Create string template
+        ordinal_string = (f"\nStatistical Values of {key}\n"
+                          f"▪️Mode: {self.data[key].mode()[0]}\n"
+                          f"Percentages of unique values in {key}\n")
+        # Get percentage of the data in string
+        for value in ordinal_values:
+            value_percent = round(
+                new_df[key].value_counts()[value]/len(new_df.index) * 100, 2
+            )
+            ordinal_string = (
+                    ordinal_string +
+                    f"▪️percentage of {value}: {value_percent}%\n"
+            )
+        return ordinal_string
 
     def filter_by_age_group(self, age_group):
         """Filter data by age group of the shooter."""
@@ -52,4 +63,3 @@ class UsaGVModel:
             'total_victims': 'sum'
         })
         return grouped_data
-
