@@ -14,5 +14,5 @@ if __name__ == "__main__":
     # Alternate size: 600x400, Intended size: 1200x800
     root.geometry('1320x720')
     root.columnconfigure(tuple(range(11)), weight=1)
-    root.rowconfigure(tuple(range(9)), weight=1)
+    root.rowconfigure(tuple(range(10)), weight=1)
     root.mainloop()

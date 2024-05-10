@@ -2,17 +2,19 @@
 This displays the dat from the Model and sends user inputs to the Controller"""
 
 import tkinter as tk
+import tkinter.ttk as ttk
 import customtkinter as ctk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-class UsaGVView(tk.Frame):
+class UsaGVView(ctk.CTkScrollableFrame):
     """
     Program view class that keeps all the visual components of the program.
     """
+
     def __init__(self, root):
-        super().__init__()
+        super().__init__(root)
         self.root = root
         # StringVar for information text
         self.information_text = tk.StringVar(self.root, "None")
@@ -22,7 +24,7 @@ class UsaGVView(tk.Frame):
         self.label_font = {'weight': 'normal',
                            'size': 14}
         self.button_font = ("Impact", 20)
-        self.detail_font = ("Helvetica", 19)
+        self.detail_font = ("Helvetica", 16)
         # Main page components
         self.init_components()
 
@@ -42,7 +44,7 @@ class UsaGVView(tk.Frame):
         # Information about the displaying attribute
         self.information_box = self.information_detail()
         self.information_box.grid(row=6, column=0, padx=8, pady=8,
-                                  columnspan=9, rowspan=3,
+                                  columnspan=9, rowspan=4,
                                   sticky="news")
 
         # Confirm button
@@ -52,7 +54,7 @@ class UsaGVView(tk.Frame):
                                             hover_color="light green",
                                             corner_radius=32,
                                             font=self.button_font)
-        self.confirm_button.grid(row=8, column=9, padx=5, pady=5,
+        self.confirm_button.grid(row=9, column=9, padx=5, pady=5,
                                  sticky="news")
 
         # Clear button
@@ -62,7 +64,7 @@ class UsaGVView(tk.Frame):
                                           hover_color="grey",
                                           corner_radius=32,
                                           font=self.button_font)
-        self.clear_button.grid(row=8, column=10, padx=5, pady=5,
+        self.clear_button.grid(row=9, column=10, padx=5, pady=5,
                                sticky="news")
 
         # Information selector
@@ -71,7 +73,7 @@ class UsaGVView(tk.Frame):
                                 columnspan=4, rowspan=7,
                                 sticky="news")
 
-    def information_detail(self) -> ctk.CTkLabel:
+    def information_detail(self):
         """
         Information text that uses a text-variable.
         :returns information detail box
@@ -105,13 +107,26 @@ class UsaGVView(tk.Frame):
         Plot a blank graph that will be later changed when the user
         selects a data to view.
         """
+        # Create a frame to contain the canvas and scrollbar
+        self.graph_frame = ttk.Frame(self.root)
+        self.graph_frame.grid(row=0, column=0, padx=10, pady=10,
+                              columnspan=9, rowspan=6, sticky="news")
+
         # Create Matplotlib figure and axis
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax = self.fig.add_subplot(111)
 
         # Create a canvas to display the Matplotlib figure
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.graph_frame)
         self.canvas.draw()
-        self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10,
-                                         columnspan=9, rowspan=6,
-                                         sticky="news")
+        self.canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH,
+                                         expand=True)
+
+        # Create a vertical scrollbar
+        self.scrollbar = ttk.Scrollbar(self.graph_frame, orient="vertical",
+                                       command=self.canvas.get_tk_widget().yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill="y")
+
+        # Configure the canvas to use the scrollbar
+        self.canvas.get_tk_widget().configure(
+            yscrollcommand=self.scrollbar.set)

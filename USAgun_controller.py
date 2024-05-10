@@ -45,7 +45,7 @@ class UsaGVController:
             # If information is Age Distribution
             elif info_type == "Age Distribution":
                 # fill in function here
-                age_of_shooter_distribution = self.model.data['age_of_shooter']
+                age_of_shooter_distribution = self.model.data['age_of_shooter'].sort_values(ascending=True)
                 self.update_display(info_type,
                                     "Age", age_of_shooter_distribution,
                                     "Frequency", age_of_shooter_distribution)
@@ -93,10 +93,9 @@ class UsaGVController:
                 self.update_information_text('location.1', 'ordinal')
 
         elif title == "Age Distribution":
-            self.view.ax.hist(attribute_x,bins=20, color='pink')
+            self.model.data.sort_index(ascending=True)
+            self.view.ax.hist(attribute_x, bins=30, color='pink')
             self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
-            self.view.ax.set_xticklabels(
-                attribute_x, fontdict=self.view.tick_font)
             self.view.ax.set_title(title)
             self.view.canvas.draw()
             # Update information about the graph
@@ -132,7 +131,7 @@ class UsaGVController:
             self.view.ax.legend()
             self.view.canvas.draw()
             # Update information text
-            self.update_information_text('injured', 'numerical')
+            self.update_information_text('injured', 'severity')
 
     def update_information_text(self, key, dtype):
         """
@@ -143,6 +142,12 @@ class UsaGVController:
         if dtype == "numerical":
             return self.view.information_text.set(
                 self.model.get_statistical_fstring(key)
+            )
+        if dtype == "severity":
+            return self.view.information_text.set(
+                self.model.get_statistical_fstring(key) +
+                self.model.get_statistical_fstring('fatalities') +
+                self.model.get_statistical_fstring('total_victims')
             )
         if dtype == "ordinal":
             return self.view.information_text.set(
