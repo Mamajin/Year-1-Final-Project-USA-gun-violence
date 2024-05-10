@@ -11,18 +11,20 @@ class UsaGVView(tk.Frame):
     def __init__(self, root):
         super().__init__()
         self.root = root
-        self.information_text = tk.StringVar(self.root, "Empty")
+        self.information_text = tk.StringVar(self.root, "None")
         # Font set here
         self.tick_font = {'weight': 'normal',
                           'size': 12}
         self.label_font = {'weight': 'normal',
                            'size': 14}
+        self.button_font = ("Impact", 20)
+        self.detail_font = ("Times New Roman", 19)
         # Main page components
         self.init_components()
 
     def init_components(self):
         """Initialize components"""
-        font = ('Helvetica', 22)
+        font = ('Helvetica', 24)
         self.option_add('*Font', font)
         # Progress bar
 
@@ -34,17 +36,18 @@ class UsaGVView(tk.Frame):
 
         # Information about the displaying attribute
         self.information_box = self.information_detail()
-        self.information_box.grid(row=6, column=0, padx=10, pady=10,
+        self.information_box.grid(row=6, column=0, padx=8, pady=8,
                                   columnspan=9, rowspan=3,
                                   sticky="news")
         # self.info_scrollbar = tk.Scrollbar(self.root, command=self.information_box.yview)
 
         # Confirm to choose the attribute
         self.confirm_button = ctk.CTkButton(self.root, text="Confirm",
-                                            fg_color="green",
+                                            fg_color="SpringGreen3",
                                             text_color="black",
                                             hover_color="light green",
-                                            corner_radius=32)
+                                            corner_radius=32,
+                                            font=self.button_font)
         self.confirm_button.grid(row=8, column=9, padx=5, pady=5,
                                  sticky="news")
 
@@ -53,7 +56,8 @@ class UsaGVView(tk.Frame):
                                           fg_color="light grey",
                                           text_color="black",
                                           hover_color="grey",
-                                          corner_radius=32)
+                                          corner_radius=32,
+                                          font=self.button_font)
         self.clear_button.grid(row=8, column=10, padx=5, pady=5,
                                sticky="news")
 
@@ -64,9 +68,11 @@ class UsaGVView(tk.Frame):
                                 sticky="news")
 
     def information_detail(self):
-        info_detail = tk.Label(textvariable=self.information_text,
-                               bg="white", anchor="nw",
-                               justify=tk.LEFT)
+        info_detail = ctk.CTkLabel(self.root,
+                                   textvariable=self.information_text,
+                                   fg_color="white", anchor="nw",
+                                   justify=tk.LEFT, corner_radius=8,
+                                   font=self.detail_font, text_color="black")
         return info_detail
 
     def make_menu_box(self):

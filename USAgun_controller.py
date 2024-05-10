@@ -18,7 +18,7 @@ class UsaGVController:
             "Incident Locations",
             "Incident Severity",
             "Incident Heatmap",
-            "Place holder option"
+            "Data Story Telling"
         ]
         self.view.set_info_options(self.info_options)
 
@@ -30,25 +30,26 @@ class UsaGVController:
             if info_type == "Age Group Distribution":
                 age_distribution = self.model.get_shooter_age_distribution()
                 self.update_display(info_type,
-                                    "Age Group", age_distribution.keys(),
-                                    "Frequency", age_distribution.values())
+                                    "Age Group", age_distribution.index,
+                                    "Frequency", age_distribution.values)
             elif info_type == "Age Distribution":
                 # fill in function here
+                age_of_shooter_distribution = self.model.data['age_of_shooter']
                 self.update_display(info_type,
-                                    "Age", age_)
+                                    "Age", age_of_shooter_distribution,
+                                    "Frequency", age_of_shooter_distribution)
             # If information is Incident Locations
             elif info_type == "Incident Locations":
                 locations = self.model.get_incident_locations()
-                locations['Other'] = locations.pop('Other')
                 self.update_display(info_type,
-                                    "Locations", locations.keys(),
-                                    "Frequency", locations.values())
+                                    "Locations", locations.index,
+                                    "Frequency", locations.values)
             # If information is Incident Severity
             elif info_type == "Incident Severity":
                 severity = self.model.get_incident_severity()
                 self.update_display(info_type,
-                                    "Date", severity.keys(),
-                                    "Count", severity.values())
+                                    "Date", severity.index,
+                                    "Count", severity['injured'])
 
     def update_display(self, title,
                        x_label, attribute_x,
@@ -68,14 +69,14 @@ class UsaGVController:
             # Update information about the graph
 
         elif title == "Age Distribution":
-            self.view.dist(attribute_x, attribute_y, color='light pink')
+            self.view.ax.hist(attribute_x,bins=20, color='pink')
             self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
             self.view.ax.set_xticklabels(
                 attribute_x, fontdict=self.view.tick_font)
-            self.view.ax.set_ylabel(attribute_y, fontdict=self.view.label_font)
             self.view.ax.set_title(title)
             self.view.canvas.draw()
             # Update information about the graph
+            self.update_information_text('age_of_shooter', 'numerical')
 
         elif title == "Incident Severity":
             # Make dataframe copy
@@ -122,4 +123,4 @@ class UsaGVController:
         print("Clearing information...")
         self.view.ax.clear()
         self.view.canvas.draw()
-        self.view.information_text.set("Empty")
+        self.view.information_text.set("None")

@@ -14,7 +14,8 @@ class UsaGVModel:
 
     def get_statistical_fstring(self, key):
         """Returns strings of statistical values from a given statistic dict"""
-        f_stat_value = (f" Statistical Values of {key}:\n"
+        f_stat_value = (f"\n"
+                        f"Statistical Values of {key}\n"
                         f" ▪️Mean: {round(self.data[key].mean(), 2)}\n"
                         f" ▪️Median: {round(self.data[key].median(), 2)}\n"
                         f" ▪️Mode: {round(self.data[key].mode()[0], 2)}\n"
@@ -33,22 +34,22 @@ class UsaGVModel:
 
     def filter_by_age_group(self, age_group):
         """Filter data by age group of the shooter."""
-        return [event for event in self.data if
-                event['age_group'] == age_group]
+        return self.data[self.data['age_group'] == age_group]
 
     def get_incident_locations(self):
         """Get unique incident locations."""
-        return self.data['location.1'].value_counts().to_dict()
+        return self.data['location.1'].value_counts()
 
     def get_shooter_age_distribution(self):
         """Get the distribution of shooter ages."""
-        return self.data['age_group'].value_counts().to_dict()
+        return self.data['age_group'].value_counts()
 
     def get_incident_severity(self):
         """Get the severity of each incident."""
-        return self.data.groupby('date').agg({
+        grouped_data = self.data.groupby('date').agg({
             'injured': 'sum',
             'fatalities': 'sum',
             'total_victims': 'sum'
-        }).to_dict()
+        })
+        return grouped_data
 
