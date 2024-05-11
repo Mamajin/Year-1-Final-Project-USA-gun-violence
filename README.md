@@ -13,10 +13,12 @@ This program will be used to see at what age most of the criminals are.
 Exploring the Relationship Between Shooter Age and Incident Severity. Investigate 
 how the age of the shooter influences the severity of gun violence in the USA.
 
-## How to run
-Packages needed to run this program properly are in the requirements.txt file. 
-You can start by running the command in your command line or press `pip install -r requirements.txt`,
-then you can start the program in `USAgun_app.py`
+## How to Run the Program
+1. Clone the repository `$ git clone https://github.com/Mamajin/Year-1-Final-Project-USA-gun-violence.git`
+2. cd into directory `$ cd Year-1-Final-Project-USA-gun-violence`
+3. create a virtual env: `$ python -m venv .venv`
+4. Download Packages: `$ pip install -r requirements.txt`
+5. Run the application: `$ python USAgun_app.py`
 
 ## Main Features
 Main page of the program:
@@ -29,7 +31,7 @@ Main page of the program:
 4. Attribute combobox:
    * Selectable hue the pair plot graph
 5. Confirm button:
-   * Refresh the Display(1.) and Information about the selected statistics(3.) to the selected information.
+   * Refresh the Display (1.) and Information about the selected statistics(3.) to the selected information.
 6. Clear button:
    * Clears information on display and selected statistics
 
