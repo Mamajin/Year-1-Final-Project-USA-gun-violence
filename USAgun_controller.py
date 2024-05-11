@@ -6,7 +6,8 @@ It also updates the View based on changes in the Model
 import pandas as pd
 import seaborn as sns
 import tkinter as tk
-from tkinter import Toplevel
+import time
+from tkinter import Toplevel, ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -229,18 +230,39 @@ class UsaGVController:
         Update display for the data story telling page
         :return:
         """
+        # Create Window
+        progress_window = Toplevel(self.root)
+        progress_window.title("Loading...")
+
+        # Create progress bar
+        progress_bar = ttk.Progressbar(progress_window, orient="horizontal",
+                                       length=200, mode="determinate")
+        progress_bar.pack(pady=10)
+
+        # Set the maximum value of the progress bar
+        progress_bar["maximum"] = 100
+
+        for i in range(101):
+            progress_bar["value"] = i
+            progress_window.update_idletasks()
+            time.sleep(0.01)
+            progress_window.update()
+
+        # Close the progress bar window after generating the pair plot
+        progress_window.destroy()
+
+        # Copy data and drop unnecessary columns
         df_copy = self.model.original_data.copy()
         df_copy = df_copy.drop(columns=['year', 'quarter', 'half'])
+
+        # Generate pair plot
         pairplot_var = sns.pairplot(df_copy, hue=self.selected_hue)
 
-        # Create a new Toplevel window
+        # Create a new Toplevel window for the graph
         graph_window = Toplevel(self.root)
         graph_window.title("Graph window")
 
-        # Create a Matplotlib figure and axis
         fig, ax = plt.subplots()
-
-        # Plot the graph
         ax.set_title(f"Pair-plot of Severity to {self.selected_hue}")
 
         # Embed the Matplotlib graph in the Tkinter window
