@@ -1,4 +1,6 @@
-"""Model of calculator compose of the calculator component"""
+"""
+Model of calculator compose of the calculator component
+"""
 
 import pandas as pd
 
@@ -12,6 +14,18 @@ class UsaGVModel:
         self.data = pd.read_csv('shooting_data.csv')
         self.original_data = self.data.copy()
         self.data['date'] = pd.to_datetime(self.data['date'])
+        # Hue attributes for combobox
+        self.hue_attributes = ["age_group", "location.1",
+                               "prior_signs_mental_health_issues",
+                               "weapons_obtained_legally", "gender",
+                               "day_of_week", "decade"]
+
+    def get_hue_attributes(self):
+        """
+        Returns attribute list
+        :return list of attributes:
+        """
+        return self.hue_attributes
 
     def get_statistical_fstring(self, key):
         """

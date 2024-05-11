@@ -7,7 +7,7 @@ if __name__ == "__main__":
     root = ctk.CTk()
     # MVC components
     model = UsaGVModel()
-    view = UsaGVView(root)
+    view = UsaGVView(root, model)
     controller = UsaGVController(root, model, view)
     # Root component
     root.title("USA Gun Violence Database Navigator")

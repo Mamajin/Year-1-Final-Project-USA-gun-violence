@@ -1,11 +1,13 @@
-"""The Controller handles user input and updates the Model accordingly.
-It also updates the View based on changes in the Model"""
+"""
+The Controller handles user input and updates the Model accordingly.
+It also updates the View based on changes in the Model
+"""
+
 import pandas as pd
 import seaborn as sns
 import tkinter as tk
 from tkinter import Toplevel
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
@@ -16,9 +18,11 @@ class UsaGVController:
     """
 
     def __init__(self, root, model, view):
+        self.selected_hue = "age_group"
         self.root = root
         self.model = model
         self.view = view
+        self.view.controller = self
 
         self.view.confirm_button.configure(command=self.on_confirm)
         self.view.clear_button.configure(command=self.on_clear)
@@ -27,6 +31,9 @@ class UsaGVController:
             "Age Group Distribution",
             "Age Distribution",
             "Incident Locations",
+            "Incident Injuries",
+            "Incident Fatalities",
+            "Incident Total Victims",
             "Incident Severity",
             "Data Story Telling"
         ]
@@ -65,6 +72,27 @@ class UsaGVController:
                                     "Frequency", locations.values)
 
             # If information is Incident Severity
+            elif info_type == "Incident Injuries":
+                severity = self.model.get_incident_severity()
+                self.update_display(info_type,
+                                    "Date", severity.index,
+                                    "Count", severity['injured'])
+
+            # If information is Incident Severity
+            elif info_type == "Incident Fatalities":
+                severity = self.model.get_incident_severity()
+                self.update_display(info_type,
+                                    "Date", severity.index,
+                                    "Count", severity['fatalities'])
+
+            # If information is Incident Severity
+            elif info_type == "Incident Total Victims":
+                severity = self.model.get_incident_severity()
+                self.update_display(info_type,
+                                    "Date", severity.index,
+                                    "Count", severity['total_victims'])
+
+            # If information is Incident Severity
             elif info_type == "Incident Severity":
                 severity = self.model.get_incident_severity()
                 self.update_display(info_type,
@@ -73,7 +101,6 @@ class UsaGVController:
 
             # If information is Data Story Telling
             elif info_type == "Data Story Telling":
-                print("Received")
                 self.update_story_display()
 
     def update_display(self, title,
@@ -91,6 +118,17 @@ class UsaGVController:
         self.view.ax.clear()
         # Make dataframe copy
         df_copy = self.model.data.copy()
+
+        # Convert date column to datetime format and set it as the index
+        df_copy['date'] = pd.to_datetime(df_copy['date'])
+        df_copy.set_index('date', inplace=True)
+        # Find the index of the row with the maximum fatalities
+        max_fatalities_index = df_copy['fatalities'].idxmax()
+        # Remove the row with the maximum fatalities
+        data = df_copy.drop(index=max_fatalities_index)
+        # Group and aggregate the data by date
+        grouped_data = data.resample(
+            'D').sum()  # Resample to daily frequency and sum the values
 
         if title == "Age Group Distribution" or title == "Incident Locations":
             self.view.ax.bar(attribute_x, attribute_y, color='lightsalmon')
@@ -117,34 +155,71 @@ class UsaGVController:
             # Update information about the graph
             self.update_information_text('age_of_shooter', 'numerical')
 
-        elif title == "Incident Severity":
-            # Convert date column to datetime format and set it as the index
-            df_copy['date'] = pd.to_datetime(df_copy['date'])
-            df_copy.set_index('date', inplace=True)
-            # Find the index of the row with the maximum fatalities
-            max_fatalities_index = df_copy['fatalities'].idxmax()
-            # Remove the row with the maximum fatalities
-            data = df_copy.drop(index=max_fatalities_index)
-            # Group and aggregate the data by date
-            grouped_data = data.resample(
-                'D').sum()  # Resample to daily frequency and sum the values
-            # Plot the graph
-            self.view.ax.plot(grouped_data.index, grouped_data['injured'],
+        elif title == "Incident Injuries":
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['injured'],
                               label='Injuries', color='blue')
-            self.view.ax.plot(grouped_data.index, grouped_data['fatalities'],
+
+            # Customize the plot
+            self.view.ax.set_title('Gun Violence Injuries Over Time')
+            self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
+            self.view.ax.set_ylabel(y_label, fontdict=self.view.label_font)
+            self.view.ax.legend()
+            self.view.canvas.draw()
+            # Update information text
+            self.update_information_text('injured', 'numerical')
+
+        elif title == "Incident Fatalities":
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['fatalities'],
+                              label='Deaths', color='red')
+
+            # Customize the plot
+            self.view.ax.set_title('Gun Violence Deaths Over Time')
+            self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
+            self.view.ax.set_ylabel(y_label, fontdict=self.view.label_font)
+            self.view.ax.legend()
+            self.view.canvas.draw()
+            # Update information text
+            self.update_information_text('fatalities', 'numerical')
+
+        elif title == "Incident Total Victims":
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['fatalities'],
+                              label='Deaths', color='green')
+
+            # Customize the plot
+            self.view.ax.set_title('Gun Violence Total Victims Over Time')
+            self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
+            self.view.ax.set_ylabel(y_label, fontdict=self.view.label_font)
+            self.view.ax.legend()
+            self.view.canvas.draw()
+            # Update information text
+            self.update_information_text('total_victims', 'numerical')
+
+        elif title == "Incident Severity":
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['injured'],
+                              label='Injuries', color='blue')
+            self.view.ax.plot(grouped_data.index,
+                              grouped_data['fatalities'],
                               label='Deaths', color='red')
             self.view.ax.plot(grouped_data.index,
                               grouped_data['total_victims'],
                               label='Total Victims', color='green')
             # Customize the plot
-            self.view.ax.set_title(
-                'Gun Violence Incidents Over Time')
+            self.view.ax.set_title('Gun Violence Incidents Over Time')
             self.view.ax.set_xlabel(x_label, fontdict=self.view.label_font)
             self.view.ax.set_ylabel(y_label, fontdict=self.view.label_font)
             self.view.ax.legend()
             self.view.canvas.draw()
             # Update information text
             self.update_information_text('injured', 'severity')
+
+    def on_hue_selected(self, selected_hue):
+        """"""
+        print(selected_hue)
+        self.selected_hue = selected_hue
 
     def update_story_display(self):
         """
@@ -153,7 +228,7 @@ class UsaGVController:
         """
         df_copy = self.model.original_data.copy()
         df_copy = df_copy.drop(columns=['year', 'quarter', 'half'])
-        pairplot_var = sns.pairplot(df_copy, hue='age_group')
+        pairplot_var = sns.pairplot(df_copy, hue=self.selected_hue)
 
         # Create a new Toplevel window
         graph_window = Toplevel(self.root)
@@ -163,7 +238,7 @@ class UsaGVController:
         fig, ax = plt.subplots()
 
         # Plot the graph
-        ax.set_title("Pair-plot of")
+        ax.set_title(f"Pair-plot of Severity to {self.selected_hue}")
 
         # Embed the Matplotlib graph in the Tkinter window
         canvas = FigureCanvasTkAgg(pairplot_var.fig, master=graph_window)
@@ -195,7 +270,6 @@ class UsaGVController:
         """
         Clears graph display and graph information
         """
-        print("Clearing information...")
         self.view.ax.clear()
         self.view.canvas.draw()
         self.view.information_text.set("None")

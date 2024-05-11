@@ -1,10 +1,11 @@
-"""This View represents the user interface.
-This displays the dat from the Model and sends user inputs to the Controller"""
+"""
+This View represents the user interface.
+This displays the dat from the Model and sends user inputs to the Controller.
+"""
 
 import tkinter as tk
 import tkinter.ttk as ttk
 import customtkinter as ctk
-import seaborn as sns
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -14,9 +15,10 @@ class UsaGVView(ctk.CTkScrollableFrame):
     Program view class that keeps all the visual components of the program.
     """
 
-    def __init__(self, root):
+    def __init__(self, root, model):
         super().__init__(root)
         self.root = root
+        self.model = model
         # StringVar for information text
         self.information_text = tk.StringVar(self.root, "None")
         # Font sets here
@@ -47,6 +49,14 @@ class UsaGVView(ctk.CTkScrollableFrame):
         self.information_box.grid(row=6, column=0, padx=8, pady=8,
                                   columnspan=9, rowspan=4,
                                   sticky="news")
+
+        # Combobox to select hue
+        self.combobox_hue = ttk.Combobox(self.root)
+        self.combobox_hue.grid(row=8, column=9, padx=5, pady=5,
+                               columnspan=2, sticky="news")
+        self.update_hue_combobox()
+        self.combobox_hue.bind("<MouseWheel>", self.disable_mousewheel)
+        self.combobox_hue.bind("<<ComboboxSelected>>", self.on_hue_selected)
 
         # Confirm button
         self.confirm_button = ctk.CTkButton(self.root, text="Confirm",
@@ -102,6 +112,20 @@ class UsaGVView(ctk.CTkScrollableFrame):
         self.info_selector.delete(0, tk.END)
         for option in options:
             self.info_selector.insert(tk.END, f" ⭕ {option}")
+
+    def update_hue_combobox(self):
+        """"""
+        self.combobox_hue['values'] = self.model.get_hue_attributes()
+
+    def disable_mousewheel(self, event):
+        """"""
+        event.widget.unbind_all("<MouseWheel>")
+
+    def on_hue_selected(self, event):
+        """"""
+        selected_hue = self.combobox_hue.get()
+        # Notify hue to controller
+        self.controller.on_hue_selected(selected_hue)
 
     def make_graph_plotter(self):
         """
