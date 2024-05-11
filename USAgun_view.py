@@ -114,15 +114,26 @@ class UsaGVView(ctk.CTkScrollableFrame):
             self.info_selector.insert(tk.END, f" ⭕ {option}")
 
     def update_hue_combobox(self):
-        """"""
+        """
+        Updates hue combobox with data attributes
+        :return:
+        """
         self.combobox_hue['values'] = self.model.get_hue_attributes()
 
     def disable_mousewheel(self, event):
-        """"""
+        """
+        Disable mousewheel to prevent error message
+        :param event:
+        :return:
+        """
         event.widget.unbind_all("<MouseWheel>")
 
     def on_hue_selected(self, event):
-        """"""
+        """
+        Sends the selected data attribute to controller
+        :param event:
+        :return:
+        """
         selected_hue = self.combobox_hue.get()
         # Notify hue to controller
         self.controller.on_hue_selected(selected_hue)

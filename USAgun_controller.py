@@ -217,8 +217,11 @@ class UsaGVController:
             self.update_information_text('injured', 'severity')
 
     def on_hue_selected(self, selected_hue):
-        """"""
-        print(selected_hue)
+        """
+        Store the selected data attribute in class attribute
+        :param selected_hue:
+        :return:
+        """
         self.selected_hue = selected_hue
 
     def update_story_display(self):
